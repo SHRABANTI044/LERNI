@@ -14,6 +14,7 @@ const usePostgres = Boolean(databaseUrl);
 const sqlitePath = process.env.LERNI_SQLITE_PATH || path.join(__dirname, 'data', 'lerni.sqlite');
 let sqlite;
 let pool;
+let postgresUserIdType = 'text';
 
 if (usePostgres) {
   pool = new Pool({
@@ -45,7 +46,8 @@ const query = (sql, params = []) => (
 const postgresUserIdColumnType = (databaseType) => {
   if (databaseType === 'uuid') return 'UUID';
   if (databaseType === 'text') return 'TEXT';
-  throw new Error(`Unsupported PostgreSQL users.id type "${databaseType}". Expected UUID or TEXT.`);
+  if (databaseType === 'bigint') return 'BIGINT';
+  throw new Error(`Unsupported PostgreSQL users.id type "${databaseType}". Expected UUID, TEXT, or BIGINT.`);
 };
 
 const transaction = async (operations) => {
@@ -94,6 +96,7 @@ const initialize = async () => {
     if (!databaseType) {
       throw new Error('Could not determine the PostgreSQL users.id column type.');
     }
+    postgresUserIdType = databaseType;
     userIdColumnType = postgresUserIdColumnType(databaseType);
   }
 
@@ -142,9 +145,55 @@ const initialize = async () => {
   for (const statement of statements) await query(statement);
 };
 
+const createUserWithProgress = async (user) => {
+  const userColumns = 'name, email, password_hash, created_at, auth_version';
+  const userValues = [user.name, user.email, user.password_hash, user.created_at, user.auth_version];
+  const progressSql = 'INSERT INTO user_progress (user_id, total_study_time, xp_earned, updated_at) VALUES ($1, 0, 0, $2)';
+
+  if (usePostgres && postgresUserIdType === 'bigint') {
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN');
+      const result = await client.query(
+        `INSERT INTO users (${userColumns}) VALUES ($1, $2, $3, $4, $5) RETURNING id`,
+        userValues
+      );
+      const createdUser = { ...user, id: result.rows[0].id };
+      await client.query(progressSql, [createdUser.id, createdUser.created_at]);
+      await client.query('COMMIT');
+      return createdUser;
+    } catch (error) {
+      await client.query('ROLLBACK');
+      throw error;
+    } finally {
+      client.release();
+    }
+  }
+
+  await transaction([
+    {
+      sql: 'INSERT INTO users (id, name, email, password_hash, created_at, auth_version) VALUES ($1, $2, $3, $4, $5, $6)',
+      params: [user.id, ...userValues],
+    },
+    {
+      sql: progressSql,
+      params: [user.id, user.created_at],
+    },
+  ]);
+  return user;
+};
+
 const close = async () => {
   if (pool) await pool.end();
   if (sqlite) sqlite.close();
 };
 
-module.exports = { close, initialize, postgresUserIdColumnType, query, transaction, usePostgres };
+module.exports = {
+  close,
+  createUserWithProgress,
+  initialize,
+  postgresUserIdColumnType,
+  query,
+  transaction,
+  usePostgres,
+};

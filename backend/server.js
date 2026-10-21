@@ -76,7 +76,7 @@ const registerHandler = async (req, res) => {
     if (typeof password !== 'string' || password.length < 8 || password.length > 128) {
       return res.status(400).json({ message: 'Password must be between 8 and 128 characters.' });
     }
-    const user = {
+    let user = {
       id: randomUUID(),
       name,
       email,
@@ -84,16 +84,7 @@ const registerHandler = async (req, res) => {
       created_at: new Date().toISOString(),
       auth_version: 0,
     };
-    await database.transaction([
-      {
-        sql: 'INSERT INTO users (id, name, email, password_hash, created_at, auth_version) VALUES ($1, $2, $3, $4, $5, $6)',
-        params: [user.id, user.name, user.email, user.password_hash, user.created_at, user.auth_version],
-      },
-      {
-        sql: 'INSERT INTO user_progress (user_id, total_study_time, xp_earned, updated_at) VALUES ($1, 0, 0, $2)',
-        params: [user.id, user.created_at],
-      },
-    ]);
+    user = await database.createUserWithProgress(user);
     res.status(201).json({
       message: 'User registered successfully',
       token: createToken(user),

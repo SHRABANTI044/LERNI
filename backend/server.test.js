@@ -149,8 +149,9 @@ test('CORS allows local development origins and rejects unconfigured external or
 test('PostgreSQL progress foreign keys use the existing users.id type', () => {
   assert.equal(database.postgresUserIdColumnType('uuid'), 'UUID');
   assert.equal(database.postgresUserIdColumnType('text'), 'TEXT');
+  assert.equal(database.postgresUserIdColumnType('bigint'), 'BIGINT');
   assert.throws(
     () => database.postgresUserIdColumnType('integer'),
-    /Unsupported PostgreSQL users\.id type "integer"/
+    /Unsupported PostgreSQL users\.id type "integer".*UUID, TEXT, or BIGINT/
   );
 });
