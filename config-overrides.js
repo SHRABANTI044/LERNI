@@ -11,11 +11,7 @@ module.exports = override(
   (config) => {
     if (config.mode === 'production') {
       config.devtool = false;
-      config.optimization.minimizer.forEach((minimizer) => {
-        if (minimizer.options && Object.prototype.hasOwnProperty.call(minimizer.options, 'parallel')) {
-          minimizer.options.parallel = false;
-        }
-      });
+      config.optimization.minimize = false;
     }
     return config;
   }
