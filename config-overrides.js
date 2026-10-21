@@ -7,5 +7,16 @@ const { override, addWebpackAlias } = require('customize-cra');
 module.exports = override(
   addWebpackAlias({
     fs: path.resolve(__dirname, 'src/empty-module.js'),
-  })
+  }),
+  (config) => {
+    if (config.mode === 'production') {
+      config.devtool = false;
+      config.optimization.minimizer.forEach((minimizer) => {
+        if (minimizer.options && Object.prototype.hasOwnProperty.call(minimizer.options, 'parallel')) {
+          minimizer.options.parallel = false;
+        }
+      });
+    }
+    return config;
+  }
 );
