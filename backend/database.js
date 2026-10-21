@@ -42,6 +42,12 @@ const query = (sql, params = []) => (
   usePostgres ? pool.query(sql, params) : Promise.resolve(sqliteQuery(sql, params))
 );
 
+const postgresUserIdColumnType = (databaseType) => {
+  if (databaseType === 'uuid') return 'UUID';
+  if (databaseType === 'text') return 'TEXT';
+  throw new Error(`Unsupported PostgreSQL users.id type "${databaseType}". Expected UUID or TEXT.`);
+};
+
 const transaction = async (operations) => {
   if (usePostgres) {
     const client = await pool.connect();
@@ -68,24 +74,39 @@ const transaction = async (operations) => {
 };
 
 const initialize = async () => {
+  await query(`CREATE TABLE IF NOT EXISTS users (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    email TEXT NOT NULL UNIQUE,
+    password_hash TEXT NOT NULL,
+    created_at TEXT NOT NULL,
+    auth_version INTEGER NOT NULL DEFAULT 0
+  )`);
+
+  let userIdColumnType = 'TEXT';
+  if (usePostgres) {
+    const result = await query(
+      `SELECT format_type(atttypid, atttypmod) AS id_type
+       FROM pg_attribute
+       WHERE attrelid = to_regclass('users') AND attname = 'id' AND NOT attisdropped`
+    );
+    const databaseType = result.rows[0]?.id_type;
+    if (!databaseType) {
+      throw new Error('Could not determine the PostgreSQL users.id column type.');
+    }
+    userIdColumnType = postgresUserIdColumnType(databaseType);
+  }
+
   const statements = [
-    `CREATE TABLE IF NOT EXISTS users (
-      id TEXT PRIMARY KEY,
-      name TEXT NOT NULL,
-      email TEXT NOT NULL UNIQUE,
-      password_hash TEXT NOT NULL,
-      created_at TEXT NOT NULL,
-      auth_version INTEGER NOT NULL DEFAULT 0
-    )`,
     `CREATE TABLE IF NOT EXISTS user_progress (
-      user_id TEXT PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+      user_id ${userIdColumnType} PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
       total_study_time INTEGER NOT NULL DEFAULT 0,
       xp_earned INTEGER NOT NULL DEFAULT 0,
       updated_at TEXT NOT NULL
     )`,
     `CREATE TABLE IF NOT EXISTS quiz_results (
       id TEXT PRIMARY KEY,
-      user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      user_id ${userIdColumnType} NOT NULL REFERENCES users(id) ON DELETE CASCADE,
       subject TEXT NOT NULL,
       topic TEXT NOT NULL,
       score INTEGER NOT NULL,
@@ -97,7 +118,7 @@ const initialize = async () => {
     )`,
     `CREATE TABLE IF NOT EXISTS lesson_completions (
       id TEXT PRIMARY KEY,
-      user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      user_id ${userIdColumnType} NOT NULL REFERENCES users(id) ON DELETE CASCADE,
       subject TEXT NOT NULL,
       topic TEXT NOT NULL,
       study_minutes INTEGER NOT NULL DEFAULT 0,
@@ -106,7 +127,7 @@ const initialize = async () => {
     )`,
     `CREATE TABLE IF NOT EXISTS emotion_history (
       id TEXT PRIMARY KEY,
-      user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      user_id ${userIdColumnType} NOT NULL REFERENCES users(id) ON DELETE CASCADE,
       emotion TEXT NOT NULL,
       confidence REAL NOT NULL,
       recorded_at TEXT NOT NULL
@@ -126,4 +147,4 @@ const close = async () => {
   if (sqlite) sqlite.close();
 };
 
-module.exports = { close, initialize, query, transaction, usePostgres };
+module.exports = { close, initialize, postgresUserIdColumnType, query, transaction, usePostgres };

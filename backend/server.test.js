@@ -145,3 +145,12 @@ test('CORS allows local development origins and rejects unconfigured external or
     message: 'This website is not allowed to access the backend.',
   });
 });
+
+test('PostgreSQL progress foreign keys use the existing users.id type', () => {
+  assert.equal(database.postgresUserIdColumnType('uuid'), 'UUID');
+  assert.equal(database.postgresUserIdColumnType('text'), 'TEXT');
+  assert.throws(
+    () => database.postgresUserIdColumnType('integer'),
+    /Unsupported PostgreSQL users\.id type "integer"/
+  );
+});

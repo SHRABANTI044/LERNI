@@ -47,6 +47,8 @@ Configure these environment variables in the backend host:
 - `PORT` — usually supplied by the hosting platform.
 - `DATABASE_SSL=false` only when the PostgreSQL provider explicitly requires SSL to be disabled. SSL is enabled by default in production.
 
+The backend supports PostgreSQL databases where `users.id` is either `UUID` or `TEXT`; newly created account-related tables use the existing ID type for their foreign keys.
+
 For a Render deployment, create a PostgreSQL database, set its internal connection URL as `DATABASE_URL`, then add the other variables to the backend web service. If frontend and API are deployed separately, set the frontend build variable `REACT_APP_API_URL` to the backend origin only (no `/api` suffix), and set the backend `FRONTEND_URL` to the frontend origin. The frontend variable must be available when building the React app.
 
 ## API
