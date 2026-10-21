@@ -12,6 +12,17 @@ module.exports = override(
     if (config.mode === 'production') {
       config.devtool = false;
       config.optimization.minimize = false;
+      const sourceMapLoaderRule = config.module.rules.find(
+        (rule) => rule.enforce === 'pre' && rule.loader && rule.loader.includes('source-map-loader')
+      );
+      if (sourceMapLoaderRule) {
+        sourceMapLoaderRule.exclude = [
+          ...(Array.isArray(sourceMapLoaderRule.exclude)
+            ? sourceMapLoaderRule.exclude
+            : [sourceMapLoaderRule.exclude].filter(Boolean)),
+          /[\\/]node_modules[\\/]face-api\.js[\\/]/i,
+        ];
+      }
     }
     return config;
   }
