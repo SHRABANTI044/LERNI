@@ -1,0 +1,135 @@
+.topic-selection-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0a0a1f 0%, #1a0a2e 50%, #0a0a1f 100%);
+  padding: 40px 20px;
+}
+
+.subject-breadcrumb {
+  color: #a855f7;
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+.topics-list {
+  max-width: 800px;
+  margin: 0 auto 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.topic-card {
+  background: rgba(20, 20, 40, 0.8);
+  border: 2px solid rgba(168, 85, 247, 0.2);
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.topic-card:focus-visible {
+  outline: 3px solid rgba(168, 85, 247, 0.55);
+  outline-offset: 3px;
+}
+
+.topic-card:hover {
+  border-color: #a855f7;
+  transform: translateX(5px);
+  box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3);
+}
+
+.topic-card.selected {
+  border-color: #a855f7;
+  background: rgba(124, 58, 237, 0.2);
+  box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
+}
+
+.topic-main {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.topic-number {
+  width: 40px;
+  height: 40px;
+  background: rgba(168, 85, 247, 0.2);
+  border: 2px solid #a855f7;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #a855f7;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.topic-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.topic-name {
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.topic-meta {
+  display: flex;
+  gap: 15px;
+  font-size: 14px;
+}
+
+.topic-difficulty {
+  font-weight: 600;
+}
+
+.topic-duration {
+  color: #b8b8d1;
+}
+
+.topic-completed {
+  color: #10b981;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.start-lesson-btn {
+  padding: 14px 30px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: linear-gradient(90deg, #7c3aed 0%, #a855f7 100%);
+  border: none;
+  color: #ffffff;
+}
+
+.start-lesson-btn:hover:not(:disabled) {
+  background: linear-gradient(90deg, #6d28d9 0%, #9333ea 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(168, 85, 247, 0.4);
+}
+
+.start-lesson-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.topic-selection-empty {
+  max-width: 800px;
+  margin: 0 auto 24px;
+  padding: 18px;
+  border: 1px solid rgba(168, 85, 247, 0.28);
+  border-radius: 12px;
+  color: #e5ddf5;
+  background: rgba(20, 20, 40, 0.8);
+  line-height: 1.5;
+}

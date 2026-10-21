@@ -1,0 +1,113 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="500" viewBox="0 0 720 500" fill="none">
+  <defs>
+    <linearGradient id="desk" x1="99" y1="349" x2="640" y2="436" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#A9B5FA"/>
+      <stop offset="1" stop-color="#C5B1F5"/>
+    </linearGradient>
+    <linearGradient id="hoodie" x1="286" y1="190" x2="456" y2="405" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#9B6AE9"/>
+      <stop offset="1" stop-color="#6958CF"/>
+    </linearGradient>
+    <linearGradient id="laptop" x1="280" y1="275" x2="467" y2="397" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#B5C6F6"/>
+      <stop offset="1" stop-color="#8498E2"/>
+    </linearGradient>
+    <linearGradient id="mug" x1="544" y1="300" x2="594" y2="358" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFDFE"/>
+      <stop offset="1" stop-color="#E8E7FC"/>
+    </linearGradient>
+    <radialGradient id="halo" cx="0" cy="0" r="1" gradientTransform="matrix(0 194 -282 0 367 275)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#E5E4FF"/>
+      <stop offset="1" stop-color="#E5E4FF" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="soft-shadow" x="51" y="377" width="631" height="69" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+      <feGaussianBlur stdDeviation="12"/>
+    </filter>
+  </defs>
+
+  <ellipse cx="365" cy="270" rx="302" ry="207" fill="url(#halo)"/>
+  <circle cx="124" cy="115" r="5" fill="#C5B8FA"/>
+  <circle cx="620" cy="156" r="4" fill="#9FC8ED"/>
+  <path d="M99 222c12-16 32-16 44 0" stroke="#D0C9FC" stroke-width="3" stroke-linecap="round"/>
+  <path d="M579 91c8-10 20-10 28 0" stroke="#D0C9FC" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="593" cy="213" r="7" fill="#D9D3FF"/>
+  <circle cx="147" cy="177" r="4" fill="#A6C9F2"/>
+  <ellipse cx="364" cy="414" rx="284" ry="17" fill="#6874BF" fill-opacity=".16" filter="url(#soft-shadow)"/>
+
+  <!-- Plant and pot -->
+  <path d="M137 354h56l-6 43h-44l-6-43Z" fill="#EBAE9A"/>
+  <path d="M140 359h50" stroke="#F5C6B1" stroke-width="4"/>
+  <path d="M165 355c-3-26-2-47 4-67m-4 43c-16-5-24-16-25-31 16 1 25 10 25 25m1-17c13-7 18-18 17-32-14 4-21 13-19 27m1-11c-2-17-10-27-25-33-1 16 7 27 25 33m1-9c10-15 10-27 2-40-11 11-13 23-4 37" stroke="#5DAE91" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M144 354h43" stroke="#D89483" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- Books -->
+  <path d="M198 351h79v18h-79c-6 0-10-4-10-9s4-9 10-9Z" fill="#F3C76D"/>
+  <path d="M198 373h83v18h-83c-6 0-10-4-10-9s4-9 10-9Z" fill="#85C9BD"/>
+  <path d="M200 395h76v17h-76c-6 0-10-4-10-8.5s4-8.5 10-8.5Z" fill="#F095A8"/>
+  <path d="M207 356v8m0 14v8m0 14v8" stroke="#fff" stroke-opacity=".78" stroke-width="2"/>
+  <text x="222" y="363" fill="#775D31" font-family="Arial,sans-serif" font-size="10" font-weight="700">LEARN</text>
+  <text x="222" y="385" fill="#376C67" font-family="Arial,sans-serif" font-size="10" font-weight="700">GROW</text>
+  <text x="222" y="407" fill="#8E4D60" font-family="Arial,sans-serif" font-size="9" font-weight="700">ACHIEVE</text>
+
+  <!-- Student silhouette -->
+  <path d="M304 193c-21 13-37 31-45 60l-25 82 52 14 31-78-13 117h151l-11-133c-3-35-22-57-54-67l-86 5Z" fill="url(#hoodie)"/>
+  <path d="M325 277c12 22 30 35 54 36 22 1 38-11 50-32" stroke="#B79AF2" stroke-width="4" stroke-linecap="round"/>
+  <path d="m333 207-13 29 27 17 23-22-17-27m45 1 14 30-27 17-22-24 16-24" fill="#B28AF0" fill-opacity=".55"/>
+  <path d="M355 201c1-12 10-21 23-22 17-1 28 12 27 31l-2 28c-2 16-12 27-25 26-13-1-21-12-22-28l-1-35Z" fill="#F5C7B2"/>
+  <path d="M351 207c-4-25 8-45 30-48 22-3 38 12 38 35 0 9-2 15-6 21-4-11-8-21-9-30-11 12-28 18-50 17l-3 16-4-11Z" fill="#4A386F"/>
+  <path d="M354 224c1 22 8 36 23 38 15 2 25-10 28-29" stroke="#E9A990" stroke-width="2" stroke-linecap="round"/>
+  <path d="M361 218c3-2 7-2 10 0m12-1c3-2 7-2 10 0" stroke="#704C58" stroke-width="2" stroke-linecap="round"/>
+  <ellipse cx="367" cy="224" rx="1.8" ry="2.5" fill="#493B55"/>
+  <ellipse cx="387" cy="223" rx="1.8" ry="2.5" fill="#493B55"/>
+  <circle cx="367.5" cy="223.5" r=".6" fill="white"/>
+  <circle cx="387.5" cy="222.5" r=".6" fill="white"/>
+  <path d="M378 225c-1 5-2 8-1 10 1 1 3 1 5 0" stroke="#DE9D8F" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M373 241c5 4 11 4 16-1" stroke="#B96E72" stroke-width="2" stroke-linecap="round"/>
+  <path d="M359 236c3 2 5 3 8 3m24-1c3-1 5-2 7-4" stroke="#E9A990" stroke-width="3" stroke-linecap="round" opacity=".7"/>
+
+  <!-- Headphones -->
+  <path d="M348 199c-5-26 7-47 29-51 22-4 41 9 44 33l1 14" stroke="#6278D9" stroke-width="10" stroke-linecap="round"/>
+  <path d="M351 188c0-12 4-21 11-28m55 25c2 6 3 12 3 19" stroke="#91A6F2" stroke-width="3" stroke-linecap="round"/>
+  <rect x="341" y="190" width="17" height="32" rx="8.5" transform="rotate(-8 341 190)" fill="#7185E4"/>
+  <rect x="411" y="183" width="17" height="32" rx="8.5" transform="rotate(9 411 183)" fill="#7185E4"/>
+  <rect x="345" y="196" width="7" height="18" rx="3.5" transform="rotate(-8 345 196)" fill="#B7C3FF"/>
+  <rect x="416" y="189" width="7" height="18" rx="3.5" transform="rotate(9 416 189)" fill="#B7C3FF"/>
+
+  <!-- Sleeves and hands -->
+  <path d="m267 298 47 14-20 47-52-14 25-47Z" fill="#8865DE"/>
+  <path d="m430 287 33 21-26 49-39-24 32-46Z" fill="#8865DE"/>
+  <path d="M297 354c11-11 20-14 29-13l31 16c7 4 5 13-3 14l-35-6c-10 8-22 8-32 2l10-13Zm111-13c9-5 19-4 29 2l17 14c6 5 2 13-6 12l-24-8-20 9c-8 3-15-4-10-11l14-18Z" fill="#F3BEA8"/>
+  <path d="M303 363c13 4 25 3 34-3m78 2 19 6" stroke="#DD9D8F" stroke-width="2.5" stroke-linecap="round"/>
+
+  <!-- Desk -->
+  <path d="M88 365c0-7 6-13 13-13h513c7 0 13 6 13 13v13H88v-13Z" fill="url(#desk)"/>
+  <path d="M109 378h497l-16 56H125l-16-56Z" fill="#A5B3ED"/>
+  <path d="M126 386h461" stroke="#D4D9FA" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- Laptop -->
+  <path d="M287 278c0-6 5-11 11-11h151c6 0 11 5 11 11v102H287V278Z" fill="url(#laptop)"/>
+  <path d="M297 279h153v87H297v-87Z" fill="#E8EEFF"/>
+  <path d="M309 291h128v64H309v-64Z" fill="#F7F8FF"/>
+  <path d="M318 344c15-18 30-21 45-8 11-26 27-35 47-26 12 5 21 16 27 30v15H318v-11Z" fill="#D8D4FF"/>
+  <circle cx="374" cy="311" r="8" fill="#C5D9FF"/>
+  <path d="M267 380h213l-17 15H282l-15-15Z" fill="#8B9DDD"/>
+  <path d="M339 383h68" stroke="#D3DBFA" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="373" cy="273" r="2" fill="#D9E2FF"/>
+
+  <!-- Mug -->
+  <path d="M555 310h41v42c0 7-5 12-12 12h-17c-7 0-12-5-12-12v-42Z" fill="url(#mug)"/>
+  <path d="M596 319h7c8 0 13 6 13 13s-5 13-13 13h-7" stroke="#D8D9F0" stroke-width="6" stroke-linecap="round"/>
+  <path d="M564 303c-5-6 5-8 0-15m16 15c-5-6 5-8 0-15" stroke="#B7A9EB" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M564 328h23" stroke="#B7AEF2" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- Notebook and pencil -->
+  <path d="M474 351h63c5 0 9 4 9 9v24h-72v-33Z" fill="#FFF9F7"/>
+  <path d="M483 359h53m-53 7h53m-53 7h42" stroke="#DDDDF2" stroke-width="2" stroke-linecap="round"/>
+  <path d="m497 345 4-3 37 40-5 4-36-41Z" fill="#F1B96F"/>
+  <path d="m535 382 3 4-5 1 2-5Z" fill="#D99273"/>
+
+  <!-- Small sparkles -->
+  <path d="M510 116v17m-8-8h16" stroke="#A894ED" stroke-width="2" stroke-linecap="round"/>
+  <path d="M237 138v12m-6-6h12" stroke="#8BB9E8" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="528" cy="179" r="3" fill="#F3B9CB"/>
+</svg>
