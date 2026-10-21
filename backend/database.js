@@ -138,7 +138,7 @@ const initialize = async () => {
     'CREATE INDEX IF NOT EXISTS quiz_results_user_date ON quiz_results(user_id, completed_at)',
     'CREATE INDEX IF NOT EXISTS emotion_history_user_date ON emotion_history(user_id, recorded_at)',
     `INSERT INTO user_progress (user_id, total_study_time, xp_earned, updated_at)
-     SELECT id, 0, 0, CURRENT_TIMESTAMP FROM users WHERE 1
+     SELECT id, 0, 0, CURRENT_TIMESTAMP FROM users WHERE TRUE
      ON CONFLICT (user_id) DO NOTHING`,
   ];
 
