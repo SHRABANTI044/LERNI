@@ -35,7 +35,9 @@ const request = async (path, options = {}) => {
 
   if (!response.ok) {
     if (response.status === 401) handleExpiredSession();
-    throw new Error(data.message || `Request failed (${response.status}).`);
+    const details = data.error || data.details || '';
+    const message = details ? `${data.message || 'Error'}: ${details}` : (data.message || `Request failed (${response.status}).`);
+    throw new Error(message);
   }
   return data;
 };
