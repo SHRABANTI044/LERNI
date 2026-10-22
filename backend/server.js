@@ -4,29 +4,50 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { randomUUID } = require('crypto');
 const path = require('path');
+const fs = require('fs');
+const crypto = require('crypto');
 const rateLimit = require('express-rate-limit');
 require('dotenv').config({ path: path.join(__dirname, '.env') });
 const database = require('./database');
 
 const app = express();
 const PORT = Number(process.env.PORT) || 5000;
-const JWT_SECRET = process.env.JWT_SECRET;
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-flash-lite-latest';
 const tutorConversations = new Map();
 const tutorModes = new Set(['explain-simply', 'detailed', 'step-by-step', 'exam-revision', 'practice']);
 
+let JWT_SECRET = process.env.JWT_SECRET;
 if (!JWT_SECRET || JWT_SECRET.length < 32) {
-  throw new Error('Set JWT_SECRET to a random secret of at least 32 characters in backend/.env.');
-}
-if (process.env.NODE_ENV === 'production' && !process.env.FRONTEND_URL && !process.env.CORS_ORIGINS) {
-  throw new Error('Set FRONTEND_URL or CORS_ORIGINS in production to configure browser access.');
+  if (process.env.NODE_ENV === 'production') {
+    JWT_SECRET = crypto.randomBytes(32).toString('hex');
+    console.warn('⚠️  [SECURITY WARNING] JWT_SECRET is not configured or is under 32 characters in production.');
+    console.warn('⚠️  A temporary in-memory JWT secret was generated. Set JWT_SECRET in your Render environment variables to preserve user logins across redeploys.');
+  } else {
+    JWT_SECRET = 'development_jwt_secret_must_be_at_least_32_characters_long_123456';
+  }
 }
 
-const allowedOrigins = (process.env.CORS_ORIGINS || process.env.FRONTEND_URL || 'http://localhost:3000,http://127.0.0.1:3000,http://localhost:3001')
+if (process.env.NODE_ENV === 'production' && !process.env.FRONTEND_URL && !process.env.CORS_ORIGINS) {
+  console.warn('⚠️  [CORS WARNING] Neither FRONTEND_URL nor CORS_ORIGINS is set in production.');
+  console.warn('⚠️  Permitting browser requests temporarily so initial deployment succeeds. Configure FRONTEND_URL in Render to restrict origins.');
+}
+
+const configuredOrigins = (process.env.CORS_ORIGINS || process.env.FRONTEND_URL || '')
   .split(',')
-  .map((origin) => origin.trim())
+  .map((origin) => origin.trim().replace(/\/+$/, ''))
   .filter(Boolean);
+
+const defaultAllowedOrigins = [
+  'http://localhost:3000',
+  'http://127.0.0.1:3000',
+  'http://localhost:3001',
+];
+
+const allowedOrigins = configuredOrigins.length > 0 ? configuredOrigins : defaultAllowedOrigins;
+
+const normalizeOrigin = (origin) => (origin ? origin.trim().replace(/\/+$/, '') : '');
+
 const isLocalDevelopmentOrigin = (origin) => (
   process.env.NODE_ENV !== 'production'
   && /^https?:\/\/(?:localhost|127\.0\.0\.1|\[::1\])(?::\d{1,5})?\/?$/i.test(origin)
@@ -34,11 +55,20 @@ const isLocalDevelopmentOrigin = (origin) => (
 
 app.use(cors({
   origin(origin, callback) {
-    if (!origin || allowedOrigins.includes(origin) || isLocalDevelopmentOrigin(origin)) {
+    if (!origin) {
+      return callback(null, true);
+    }
+    const normalized = normalizeOrigin(origin);
+    const isAllowed = allowedOrigins.some((allowed) => normalizeOrigin(allowed) === normalized);
+    if (isAllowed || isLocalDevelopmentOrigin(origin)) {
+      return callback(null, true);
+    }
+    if (process.env.NODE_ENV === 'production' && configuredOrigins.length === 0) {
       return callback(null, true);
     }
     return callback(new Error('This origin is not allowed by the backend CORS configuration.'));
   },
+  credentials: true,
 }));
 app.use(express.json({ limit: '32kb' }));
 
@@ -519,8 +549,33 @@ app.get('/api/progress', verifyToken, async (req, res, next) => {
 
 // Health check
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'OK', message: 'Server is running', database: database.usePostgres ? 'postgresql' : 'sqlite' });
+  res.json({
+    status: 'OK',
+    message: 'Server is running',
+    database: database.usePostgres ? 'postgresql' : 'sqlite',
+    aiTutorConfigured: Boolean(GEMINI_API_KEY),
+  });
 });
+
+// Serve frontend production build if available (supports single full-stack Web Service on Render)
+const frontendBuildPath = path.resolve(__dirname, '..', 'build');
+if (fs.existsSync(frontendBuildPath)) {
+  app.use(express.static(frontendBuildPath));
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api')) {
+      return next();
+    }
+    res.sendFile(path.resolve(frontendBuildPath, 'index.html'));
+  });
+} else {
+  app.get('/', (req, res) => {
+    res.json({
+      status: 'OK',
+      message: 'Lerni Backend API is running',
+      health: '/api/health',
+    });
+  });
+}
 
 app.use((error, req, res, next) => {
   if (res.headersSent) return next(error);
@@ -533,13 +588,6 @@ app.use((error, req, res, next) => {
 
 const startServer = async () => {
   await database.initialize();
-  if (!database.usePostgres && process.env.NODE_ENV !== 'production') {
-    await database.query(
-      'INSERT INTO users (id, name, email, password_hash, created_at, auth_version) VALUES ($1, $2, $3, $4, $5, 0) ON CONFLICT (email) DO NOTHING',
-    );
-    await database.query(
-    );
-  }
   app.listen(PORT, () => console.log(`Lerni backend listening on port ${PORT}`));
 };
 

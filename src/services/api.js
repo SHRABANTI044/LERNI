@@ -1,4 +1,13 @@
-const API_URL = (process.env.REACT_APP_API_URL || '/api').replace(/\/$/, '');
+const getApiBase = () => {
+  let envUrl = (process.env.REACT_APP_API_URL || '').trim().replace(/\/+$/, '');
+  if (!envUrl) return '/api';
+  if (!/^https?:\/\//i.test(envUrl) && !envUrl.startsWith('/')) {
+    envUrl = `https://${envUrl}`;
+  }
+  return envUrl.endsWith('/api') ? envUrl : `${envUrl}/api`;
+};
+
+const API_URL = getApiBase();
 
 const clearSession = () => {
   localStorage.removeItem('token');

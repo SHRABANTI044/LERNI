@@ -7,7 +7,8 @@ const isProduction = process.env.NODE_ENV === 'production';
 const databaseUrl = process.env.DATABASE_URL;
 
 if (isProduction && !databaseUrl) {
-  throw new Error('DATABASE_URL is required in production. Configure a PostgreSQL database before starting the backend.');
+  console.warn('⚠️  [DATABASE WARNING] DATABASE_URL is not set in production.');
+  console.warn('⚠️  Falling back to local SQLite database. On Render free tier, attach a PostgreSQL database to persist data permanently across restarts.');
 }
 
 const usePostgres = Boolean(databaseUrl);

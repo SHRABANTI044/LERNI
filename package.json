@@ -19,7 +19,10 @@
     "start": "react-app-rewired start",
     "build": "react-app-rewired build",
     "test": "react-app-rewired test",
-    "eject": "react-app-rewired eject"
+    "eject": "react-app-rewired eject",
+    "render-build": "npm install && npm run build && cd backend && npm install",
+    "render-start": "node backend/server.js",
+    "start:backend": "node backend/server.js"
   },
   "eslintConfig": {
     "extends": [

@@ -24,7 +24,16 @@
  * services/api.js). No Gemini API key is ever embedded in the frontend.
  */
 
-const API_URL = `${(process.env.REACT_APP_API_URL || '').replace(/\/$/, '')}/api/tutor`;
+const getApiBase = () => {
+  let envUrl = (process.env.REACT_APP_API_URL || '').trim().replace(/\/+$/, '');
+  if (!envUrl) return '/api';
+  if (!/^https?:\/\//i.test(envUrl) && !envUrl.startsWith('/')) {
+    envUrl = `https://${envUrl}`;
+  }
+  return envUrl.endsWith('/api') ? envUrl : `${envUrl}/api`;
+};
+
+const API_URL = `${getApiBase()}/tutor`;
 
 const getToken = () => localStorage.getItem('token');
 
