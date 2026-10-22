@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
-import { getUserProfile, isAuthenticated } from './services/api';
+import { clearSession, getUserProfile, isAuthenticated } from './services/api';
 import Login from './components/Login';
 import StartStudy from './components/StartStudy';
 import SubjectSelection from './components/SubjectSelection';
@@ -38,7 +38,10 @@ const SessionRoute = ({ children, publicOnly = false }) => {
         setValidatedPath(location.pathname);
       })
       .catch((requestError) => {
-        if (isAuthenticated()) {
+        if (publicOnly) {
+          clearSession();
+          setStatus('unauthenticated');
+        } else if (isAuthenticated()) {
           setStatus('error');
           setError(requestError.message || 'Could not verify your session.');
         } else {
@@ -72,7 +75,8 @@ const SessionRoute = ({ children, publicOnly = false }) => {
     return (
       <main className="session-check-error" role="alert">
         <p>{error}</p>
-        <button type="button" onClick={validateSession}>Try again</button>
+        <button type="button" onClick={validateSession} style={{ marginRight: '8px' }}>Try again</button>
+        <button type="button" onClick={() => { clearSession(); setStatus('unauthenticated'); }}>Log in again</button>
       </main>
     );
   }

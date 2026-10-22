@@ -25,6 +25,12 @@
  */
 
 const getApiBase = () => {
+  if (typeof window !== 'undefined' && window.location && window.location.origin) {
+    const envUrl = (process.env.REACT_APP_API_URL || '').trim();
+    if (!envUrl || (window.location.hostname.endsWith('onrender.com') && envUrl.includes('onrender.com'))) {
+      return '/api';
+    }
+  }
   let envUrl = (process.env.REACT_APP_API_URL || '').trim().replace(/\/+$/, '');
   if (!envUrl) return '/api';
   if (!/^https?:\/\//i.test(envUrl) && !envUrl.startsWith('/')) {
