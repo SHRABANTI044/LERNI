@@ -11,6 +11,7 @@ require('dotenv').config({ path: path.join(__dirname, '.env') });
 const database = require('./database');
 
 const app = express();
+app.set('trust proxy', 1);
 const PORT = Number(process.env.PORT) || 5000;
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-flash-lite-latest';
@@ -48,6 +49,8 @@ const allowedOrigins = configuredOrigins.length > 0 ? configuredOrigins : defaul
 
 const normalizeOrigin = (origin) => (origin ? origin.trim().replace(/\/+$/, '') : '');
 
+const isRenderOrigin = (origin) => Boolean(origin && /\.onrender\.com\/?$/i.test(origin));
+
 const isLocalDevelopmentOrigin = (origin) => (
   process.env.NODE_ENV !== 'production'
   && /^https?:\/\/(?:localhost|127\.0\.0\.1|\[::1\])(?::\d{1,5})?\/?$/i.test(origin)
@@ -60,10 +63,10 @@ app.use(cors({
     }
     const normalized = normalizeOrigin(origin);
     const isAllowed = allowedOrigins.some((allowed) => normalizeOrigin(allowed) === normalized);
-    if (isAllowed || isLocalDevelopmentOrigin(origin)) {
+    if (isAllowed || isLocalDevelopmentOrigin(origin) || isRenderOrigin(origin)) {
       return callback(null, true);
     }
-    if (process.env.NODE_ENV === 'production' && configuredOrigins.length === 0) {
+    if (configuredOrigins.length === 0) {
       return callback(null, true);
     }
     return callback(new Error('This origin is not allowed by the backend CORS configuration.'));
@@ -74,9 +77,10 @@ app.use(express.json({ limit: '32kb' }));
 
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  limit: 10,
+  limit: 50,
   standardHeaders: true,
   legacyHeaders: false,
+  validate: { xForwardedForHeader: false },
   message: { message: 'Too many sign-in attempts. Please wait and try again.' },
 });
 const safeUser = (user) => ({
